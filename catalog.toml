@@ -1,0 +1,25 @@
+[[plugin]]
+id           = "SoM/strix-powermon"
+name         = "Powermon"
+version      = "1.0.0"
+author       = "SoM"
+license      = "MIT"
+icon         = "bolt"
+description  = "Configurable Power Monitor for APU chip, dedicated GPU, and battery power draw."
+deprecated   = false
+plugin_api   = 28
+tags         = ["battery", "power", "apu", "npu", "dgpu", "sensors"]
+dependencies = ["lm-sensors", "upower", "xrt-smi(NPU monitoring)"]
+
+[[plugin]]
+id           = "SoM/asusctl"
+name         = "AsusCtl"
+version      = "1.0.0"
+author       = "SoM"
+license      = "MIT"
+icon         = "bolt"
+description  = "Control ASUS Armoury Crate Platform Profile and Battery Threshold."
+deprecated   = false
+plugin_api   = 28
+tags         = ["asusctl", "asus", "power-profiles", "battery-threshold"]
+dependencies = ["asusctl"]

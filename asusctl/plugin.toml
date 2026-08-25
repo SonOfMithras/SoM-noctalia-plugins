@@ -1,0 +1,158 @@
+id = "SoM/asusctl"
+name = "AsusCtl"
+version = "1.0.0"
+plugin_api = 28
+author = "SoM"
+license = "MIT"
+dependencies = ["asusctl"]
+tags = ["asusctl", "asus", "rog-control-center"]
+icon = "bolt"
+description = "Controls ASUS Armoury Crate settings."
+
+[[setting]]
+key = "update_interval_sec"
+type = "float"
+label_key = "Refresh Interval (sec)"
+default = 5.0
+min = 0.1
+max = 3600.0
+step = 0.1
+
+[[setting]]
+key = "bg_color"
+type = "select"
+label_key = "Background Color"
+default = "surface"
+options = [
+  { value = "surface", label_key = "Surface" },
+  { value = "primary", label_key = "Primary" },
+  { value = "secondary", label_key = "Secondary" },
+  { value = "tertiary", label_key = "Tertiary" },
+  { value = "surface_variant", label_key = "Surface Variant" }
+]
+
+[[setting]]
+key = "bg_opacity"
+type = "int"
+label_key = "Background Opacity (%)"
+default = 0
+min = 0
+max = 100
+
+[[setting]]
+key = "show_ac_batt_profiles"
+type = "bool"
+label_key = "Show AC/BATT Profiles"
+default = true
+
+[[setting]]
+key = "glyph_quiet"
+type = "glyph"
+label_key = "Quiet Profile Glyph"
+default = "windmill-off"
+
+[[setting]]
+key = "glyph_balanced"
+type = "glyph"
+label_key = "Balanced Profile Glyph"
+default = "windmill"
+
+[[setting]]
+key = "glyph_performance"
+type = "glyph"
+label_key = "Performance Profile Glyph"
+default = "windmill-filled"
+
+[[service]]
+id = "asusctl_service"
+entry = "service.luau"
+
+[[widget]]
+id = "asusctl"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "display_style"
+  type = "select"
+  label_key = "Display Style"
+  default = "both"
+  options = [
+    { value = "both", label_key = "Icon and Text" },
+    { value = "icon", label_key = "Icon Only" },
+    { value = "text", label_key = "Text Only" }
+  ]
+
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/asusctl:panel"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 400
+height = 335
+placement = "attached"
+open_near_click = true
+
+[[desktop_widget]]
+id = "asusctl_desktop"
+entry = "desktop.luau"
+
+    [[desktop_widget.setting]]
+    key = "show_icon"
+    type = "bool"
+    label_key = "Show Icon"
+    default = true
+
+    [[desktop_widget.setting]]
+    key = "text_color"
+    type = "select"
+    label_key = "Text Color"
+    default = "on_surface"
+    options = [
+      { value = "on_surface", label_key = "Default" },
+      { value = "primary", label_key = "Primary" },
+      { value = "secondary", label_key = "Secondary" },
+      { value = "tertiary", label_key = "Tertiary" },
+      { value = "on_surface_variant", label_key = "Muted" }
+    ]
+
+    [[desktop_widget.setting]]
+    key = "glyph_color"
+    type = "select"
+    label_key = "Glyph Color"
+    default = "primary"
+    options = [
+      { value = "on_surface", label_key = "Default" },
+      { value = "primary", label_key = "Primary" },
+      { value = "secondary", label_key = "Secondary" },
+      { value = "tertiary", label_key = "Tertiary" }
+    ]
+
+[[shortcut]]
+id = "asusctl_toggle_button"
+entry = "shortcut.luau"

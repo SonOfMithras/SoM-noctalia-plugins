@@ -1,0 +1,736 @@
+id = "SoM/strix-powermon"
+name = "Powermon"
+version = "1.0.0"
+plugin_api = 28
+author = "SoM"
+license = "MIT"
+dependencies = ["upower", "xrt-smi (optional for NPU power monitoring)", "nvidia-smi (optional for Nvidia dGPU power monitoring)", "sensors"]
+tags = ["battery", "power"]
+icon = "bolt"
+description = "Configurable Power Monitor for APU chip and battery power draw."
+
+[[setting]]
+key = "update_interval_sec"
+type = "float"
+label_key = "Refresh Interval (sec)"
+default = 15.0
+min = 0.1
+max = 360.0
+step = 0.1
+
+[[setting]]
+key = "chart_time_minutes"
+type = "int"
+label_key = "Chart Time Length (minutes)"
+default = 5
+min = 1
+max = 1440
+
+[[setting]]
+key = "cpu_cmd"
+type = "string"
+label_key = "CPU Power Command (Parses JSON from sensors -j or raw string)"
+default = "sensors -j"
+
+[[setting]]
+key = "battery_cmd"
+type = "string"
+label_key = "Battery Power Command (Parses JSON from sensors -j or raw string)"
+default = "sensors -j"
+
+[[setting]]
+key = "npu_cmd"
+type = "string"
+label_key = "NPU Power Command (e.g. xrt-smi or cat /sys/...)"
+default = "xrt-smi examine --report platform"
+
+[[setting]]
+key = "gpu_cmd"
+type = "string"
+label_key = "GPU Power Command"
+default = "cat /sys/class/drm/card*/device/hwmon/hwmon*/power1_average 2>/dev/null"
+
+[[setting]]
+key = "dgpu_cmd"
+type = "string"
+label_key = "dGPU Power Command (Optional, overrides auto-detection)"
+default = ""
+
+[[setting]]
+key = "show_system"
+type = "bool"
+label_key = "Show System (Battery)"
+default = true
+
+[[setting]]
+key = "show_cpu"
+type = "bool"
+label_key = "Show CPU"
+default = true
+
+[[setting]]
+key = "show_gpu"
+type = "bool"
+label_key = "Show GPU"
+default = true
+
+[[setting]]
+key = "show_dgpu"
+type = "bool"
+label_key = "Show dGPU"
+default = true
+
+[[setting]]
+key = "show_npu"
+type = "bool"
+label_key = "Show NPU"
+default = true
+
+[[setting]]
+key = "show_battery_time"
+type = "bool"
+label_key = "Show Time to Full/Empty"
+default = true
+
+[[setting]]
+key = "show_battery_percent"
+type = "bool"
+label_key = "Show Battery Percentage"
+default = true
+
+[[setting]]
+key = "panel_style"
+type = "select"
+label_key = "Panel Style"
+default = "native"
+options = [
+  { value = "classic", label_key = "Classic" },
+  { value = "native", label_key = "Native" }
+]
+
+[[service]]
+id = "powermon_service"
+entry = "service.luau"
+
+[[widget]]
+id = "powermon"
+name = "Powermon (Auto)"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "show_icon"
+  type = "bool"
+  label_key = "Show Widget Icon"
+  default = true
+
+  [[widget.setting]]
+  key = "icon_name"
+  type = "glyph"
+  label_key = "Widget Icon"
+  default = "battery-charging"
+
+  [[widget.setting]]
+  key = "show_text"
+  type = "bool"
+  label_key = "Show Text"
+  default = true
+
+  [[widget.setting]]
+  key = "display_stat"
+  type = "select"
+  label_key = "Text Display Mode"
+  default = "auto"
+  options = [
+    { value = "auto", label_key = "Auto (Battery or CPU)" },
+    { value = "battery_percent", label_key = "Battery Percentage" },
+    { value = "battery_time", label_key = "Time to Full/Empty" },
+    { value = "battery", label_key = "System (Battery) Power" },
+    { value = "cpu", label_key = "CPU Power" },
+    { value = "gpu", label_key = "GPU Power" },
+    { value = "dgpu", label_key = "dGPU Power" },
+    { value = "npu", label_key = "NPU Power" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/strix-powermon:panel"
+
+[[widget]]
+id = "powermon_battery_percent"
+name = "Battery Percentage"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "show_icon"
+  type = "bool"
+  label_key = "Show Widget Icon"
+  default = true
+
+  [[widget.setting]]
+  key = "icon_name"
+  type = "glyph"
+  label_key = "Widget Icon"
+  default = "battery-charging"
+
+  [[widget.setting]]
+  key = "show_text"
+  type = "bool"
+  label_key = "Show Text"
+  default = true
+
+  [[widget.setting]]
+  key = "display_stat"
+  type = "select"
+  label_key = "Text Display Mode"
+  default = "battery_percent"
+  options = [
+    { value = "auto", label_key = "Auto (Battery or CPU)" },
+    { value = "battery_percent", label_key = "Battery Percentage" },
+    { value = "battery_time", label_key = "Time to Full/Empty" },
+    { value = "battery", label_key = "System (Battery) Power" },
+    { value = "cpu", label_key = "CPU Power" },
+    { value = "gpu", label_key = "GPU Power" },
+    { value = "dgpu", label_key = "dGPU Power" },
+    { value = "npu", label_key = "NPU Power" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/strix-powermon:panel"
+
+[[widget]]
+id = "powermon_battery_time"
+name = "Time to Full/Empty"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "show_icon"
+  type = "bool"
+  label_key = "Show Widget Icon"
+  default = true
+
+  [[widget.setting]]
+  key = "icon_name"
+  type = "glyph"
+  label_key = "Widget Icon"
+  default = "clock"
+
+  [[widget.setting]]
+  key = "show_text"
+  type = "bool"
+  label_key = "Show Text"
+  default = true
+
+  [[widget.setting]]
+  key = "display_stat"
+  type = "select"
+  label_key = "Text Display Mode"
+  default = "battery_time"
+  options = [
+    { value = "auto", label_key = "Auto (Battery or CPU)" },
+    { value = "battery_percent", label_key = "Battery Percentage" },
+    { value = "battery_time", label_key = "Time to Full/Empty" },
+    { value = "battery", label_key = "System (Battery) Power" },
+    { value = "cpu", label_key = "CPU Power" },
+    { value = "gpu", label_key = "GPU Power" },
+    { value = "dgpu", label_key = "dGPU Power" },
+    { value = "npu", label_key = "NPU Power" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/strix-powermon:panel"
+
+[[widget]]
+id = "powermon_battery"
+name = "System Power"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "show_icon"
+  type = "bool"
+  label_key = "Show Widget Icon"
+  default = true
+
+  [[widget.setting]]
+  key = "icon_name"
+  type = "glyph"
+  label_key = "Widget Icon"
+  default = "battery-charging"
+
+  [[widget.setting]]
+  key = "show_text"
+  type = "bool"
+  label_key = "Show Text"
+  default = true
+
+  [[widget.setting]]
+  key = "display_stat"
+  type = "select"
+  label_key = "Text Display Mode"
+  default = "battery"
+  options = [
+    { value = "auto", label_key = "Auto (Battery or CPU)" },
+    { value = "battery_percent", label_key = "Battery Percentage" },
+    { value = "battery_time", label_key = "Time to Full/Empty" },
+    { value = "battery", label_key = "System (Battery) Power" },
+    { value = "cpu", label_key = "CPU Power" },
+    { value = "gpu", label_key = "GPU Power" },
+    { value = "dgpu", label_key = "dGPU Power" },
+    { value = "npu", label_key = "NPU Power" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/strix-powermon:panel"
+
+[[widget]]
+id = "powermon_cpu"
+name = "CPU Power"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "show_icon"
+  type = "bool"
+  label_key = "Show Widget Icon"
+  default = true
+
+  [[widget.setting]]
+  key = "icon_name"
+  type = "glyph"
+  label_key = "Widget Icon"
+  default = "cpu"
+
+  [[widget.setting]]
+  key = "show_text"
+  type = "bool"
+  label_key = "Show Text"
+  default = true
+
+  [[widget.setting]]
+  key = "display_stat"
+  type = "select"
+  label_key = "Text Display Mode"
+  default = "cpu"
+  options = [
+    { value = "auto", label_key = "Auto (Battery or CPU)" },
+    { value = "battery_percent", label_key = "Battery Percentage" },
+    { value = "battery_time", label_key = "Time to Full/Empty" },
+    { value = "battery", label_key = "System (Battery) Power" },
+    { value = "cpu", label_key = "CPU Power" },
+    { value = "gpu", label_key = "GPU Power" },
+    { value = "dgpu", label_key = "dGPU Power" },
+    { value = "npu", label_key = "NPU Power" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/strix-powermon:panel"
+
+[[widget]]
+id = "powermon_gpu"
+name = "GPU Power"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "show_icon"
+  type = "bool"
+  label_key = "Show Widget Icon"
+  default = true
+
+  [[widget.setting]]
+  key = "icon_name"
+  type = "glyph"
+  label_key = "Widget Icon"
+  default = "gpu-usage"
+
+  [[widget.setting]]
+  key = "show_text"
+  type = "bool"
+  label_key = "Show Text"
+  default = true
+
+  [[widget.setting]]
+  key = "display_stat"
+  type = "select"
+  label_key = "Text Display Mode"
+  default = "gpu"
+  options = [
+    { value = "auto", label_key = "Auto (Battery or CPU)" },
+    { value = "battery_percent", label_key = "Battery Percentage" },
+    { value = "battery_time", label_key = "Time to Full/Empty" },
+    { value = "battery", label_key = "System (Battery) Power" },
+    { value = "cpu", label_key = "CPU Power" },
+    { value = "gpu", label_key = "GPU Power" },
+    { value = "dgpu", label_key = "dGPU Power" },
+    { value = "npu", label_key = "NPU Power" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/strix-powermon:panel"
+
+[[widget]]
+id = "powermon_npu"
+name = "NPU Power"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "show_icon"
+  type = "bool"
+  label_key = "Show Widget Icon"
+  default = true
+
+  [[widget.setting]]
+  key = "icon_name"
+  type = "glyph"
+  label_key = "Widget Icon"
+  default = "brain"
+
+  [[widget.setting]]
+  key = "show_text"
+  type = "bool"
+  label_key = "Show Text"
+  default = true
+
+  [[widget.setting]]
+  key = "display_stat"
+  type = "select"
+  label_key = "Text Display Mode"
+  default = "npu"
+  options = [
+    { value = "auto", label_key = "Auto (Battery or CPU)" },
+    { value = "battery_percent", label_key = "Battery Percentage" },
+    { value = "battery_time", label_key = "Time to Full/Empty" },
+    { value = "battery", label_key = "System (Battery) Power" },
+    { value = "cpu", label_key = "CPU Power" },
+    { value = "gpu", label_key = "GPU Power" },
+    { value = "dgpu", label_key = "dGPU Power" },
+    { value = "npu", label_key = "NPU Power" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/strix-powermon:panel"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 600
+height = 360
+placement = "attached"
+open_near_click = true
+
+[[desktop_widget]]
+id = "powermon_desktop"
+entry = "desktop.luau"
+
+  [[desktop_widget.setting]]
+  key = "show_title_icon"
+  type = "bool"
+  label_key = "Show Title Battery Icon"
+  default = true
+
+
+  [[desktop_widget.setting]]
+  key = "title_color"
+  type = "select"
+  label_key = "Title Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[desktop_widget.setting]]
+  key = "cpu_color"
+  type = "select"
+  label_key = "CPU Text Color"
+  default = "on_surface_variant"
+  options = [
+    { value = "on_surface_variant", label_key = "Default" },
+    { value = "on_surface", label_key = "White" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" },
+    { value = "error", label_key = "Error" }
+  ]
+
+  [[desktop_widget.setting]]
+  key = "gpu_color"
+  type = "select"
+  label_key = "GPU Text Color"
+  default = "on_surface_variant"
+  options = [
+    { value = "on_surface_variant", label_key = "Default" },
+    { value = "on_surface", label_key = "White" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" },
+    { value = "error", label_key = "Error" }
+  ]
+
+  [[desktop_widget.setting]]
+  key = "dgpu_color"
+  type = "select"
+  label_key = "dGPU Text Color"
+  default = "on_surface_variant"
+  options = [
+    { value = "on_surface_variant", label_key = "Default" },
+    { value = "on_surface", label_key = "White" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" },
+    { value = "error", label_key = "Error" }
+  ]
+
+  [[desktop_widget.setting]]
+  key = "sys_color"
+  type = "select"
+  label_key = "SYS Text Color"
+  default = "on_surface_variant"
+  options = [
+    { value = "on_surface_variant", label_key = "Default" },
+    { value = "on_surface", label_key = "White" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" },
+    { value = "error", label_key = "Error" }
+  ]
+
+  [[desktop_widget.setting]]
+  key = "npu_color"
+  type = "select"
+  label_key = "NPU Text Color"
+  default = "on_surface_variant"
+  options = [
+    { value = "on_surface_variant", label_key = "Default" },
+    { value = "on_surface", label_key = "White" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" },
+    { value = "error", label_key = "Error" }
+  ]
+
+  [[desktop_widget.setting]]
+  key = "cpu_glyph"
+  type = "glyph"
+  label_key = "CPU Glyph"
+  default = ""
+
+  [[desktop_widget.setting]]
+  key = "hide_cpu_text"
+  type = "bool"
+  label_key = "Hide CPU Text"
+  default = false
+
+  [[desktop_widget.setting]]
+  key = "gpu_glyph"
+  type = "glyph"
+  label_key = "GPU Glyph"
+  default = ""
+
+  [[desktop_widget.setting]]
+  key = "hide_gpu_text"
+  type = "bool"
+  label_key = "Hide GPU Text"
+  default = false
+
+  [[desktop_widget.setting]]
+  key = "dgpu_glyph"
+  type = "glyph"
+  label_key = "dGPU Glyph"
+  default = ""
+
+  [[desktop_widget.setting]]
+  key = "hide_dgpu_text"
+  type = "bool"
+  label_key = "Hide dGPU Text"
+  default = false
+
+  [[desktop_widget.setting]]
+  key = "sys_glyph"
+  type = "glyph"
+  label_key = "SYS Glyph"
+  default = ""
+
+  [[desktop_widget.setting]]
+  key = "hide_sys_text"
+  type = "bool"
+  label_key = "Hide SYS Text"
+  default = false
+
+  [[desktop_widget.setting]]
+  key = "npu_glyph"
+  type = "glyph"
+  label_key = "NPU Glyph"
+  default = ""
+
+  [[desktop_widget.setting]]
+  key = "hide_npu_text"
+  type = "bool"
+  label_key = "Hide NPU Text"
+  default = false
