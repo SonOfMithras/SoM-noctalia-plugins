@@ -15,7 +15,7 @@ A power monitoring plugin for Ryzen APU's, designed with laptops in mind so I de
 
 ## Limitations
 - **Hardware Specific Paths**: GPU power draw relies on reading from `/sys/class/drm/card*/device/hwmon/...`. Depending on your specific AMD/Nvidia GPU and kernel version, this path might change or require tweaking in the plugin settings. For NVIDIA dedicated GPUs (dGPU), you can set the dGPU command to: `nvidia-smi --query-gpu=power.draw --format=csv,noheader,nounits`
-- **NPU Compatibility**: The NPU tracking defaults to `xrt-smi` which requires the Xilinx XRT drivers. It may not work on non-Ryzen AI chips or unconfigured systems, this can be configured in the plugin settings as well.
+- **NPU Compatibility**: The NPU tracking defaults to `xrt-smi` which requires the AMD XRT drivers. It may not work on non-Ryzen AI chips or unconfigured systems, this can be configured in the plugin settings as well.
 - **Update Frequency**: Fetching data using CLI commands (like `sensors -j`) has a slight overhead. The default refresh interval is 15 seconds to minimize battery impact from the polling itself.
 - **0% Desktop Widget**: Disabling both Estimated time to... and Battery percentage will result in the widget showing "0%" on the desktop widget. Luckily it is customizable so it is not much of an issue, and if you want it displayed, have either battery percentage or estimated time enabled in the plugin settings.
 
