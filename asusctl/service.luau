@@ -15,6 +15,14 @@ local data = {
 -- Initial state set
 noctalia.state.set("asusctl_data", data)
 
+noctalia.state.watch("asusctl_data", function(new_data)
+  if type(new_data) == "table" then
+    for k, v in pairs(new_data) do
+      data[k] = v
+    end
+  end
+end)
+
 function update()
   noctalia.setUpdateInterval(interval)
 

@@ -62,6 +62,7 @@ local function profileDropdown(title, mode, current_val)
     for _, p in ipairs(profiles) do
       if p ~= current_val then
         table.insert(buttons, ui.button({
+          key = "dropdown-item-" .. mode .. "-" .. p,
           text = p,
           variant = "ghost",
           onClick = function() 
@@ -74,6 +75,7 @@ local function profileDropdown(title, mode, current_val)
   end
 
   local main_btn = ui.button({
+    key = "dropdown-main-" .. mode .. "-" .. tostring(current_val) .. "-" .. (dropdown_open[mode] and "open" or "closed"),
     text = current_val,
     glyph = dropdown_open[mode] and "chevron-up" or "chevron-down",
     variant = "tonal",
@@ -85,13 +87,13 @@ local function profileDropdown(title, mode, current_val)
 
   local dd_content
   if dropdown_open[mode] and #buttons > 0 then
-    dd_content = ui.column({ gap = 2, padding = 4 }, buttons)
+    dd_content = ui.column({ key = "dropdown-content-" .. mode, gap = 2, padding = 4 }, buttons)
   end
 
   local right_side = { main_btn }
   if dd_content then table.insert(right_side, dd_content) end
 
-  return ui.row({ gap = 10, align = "start" }, {
+  return ui.row({ key = "dropdown-row-" .. mode .. "-" .. tostring(current_val), gap = 10, align = "start" }, {
     ui.row({ gap = 10, align = "center", width = 140 }, {
       ui.glyph({ name = profileGlyph(current_val), size = 16, color = "primary" }),
       ui.label({ text = title, fontWeight = "medium" })
@@ -103,8 +105,10 @@ end
 local function profileRow(title, mode, current_val)
   local buttons = {}
   for _, p in ipairs(profiles) do
-    local variant = (p == current_val) and "primary" or "tonal"
+    local is_active = (p == current_val)
+    local variant = is_active and "primary" or "tonal"
     table.insert(buttons, ui.button({
+      key = "profile-btn-" .. mode .. "-" .. p .. "-" .. (is_active and "active" or "inactive"),
       glyph = profileGlyph(p),
       tooltip = p,
       variant = variant,
@@ -114,9 +118,9 @@ local function profileRow(title, mode, current_val)
     }))
   end
   
-  return ui.column({ gap = 15, align = "center" }, {
+  return ui.column({ key = "profile-col-" .. mode .. "-" .. tostring(current_val), gap = 15, align = "center" }, {
     ui.label({ text = title, fontWeight = "bold" }),
-    ui.row({ gap = 30, justify = "center" }, buttons)
+    ui.row({ key = "profile-row-" .. mode .. "-" .. tostring(current_val), gap = 30, justify = "center" }, buttons)
   })
 end
 
