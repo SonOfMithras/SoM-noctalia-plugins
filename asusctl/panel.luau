@@ -93,7 +93,7 @@ local function profileDropdown(title, mode, current_val)
   local right_side = { main_btn }
   if dd_content then table.insert(right_side, dd_content) end
 
-  return ui.row({ key = "dropdown-row-" .. mode .. "-" .. tostring(current_val), gap = 10, align = "start" }, {
+  return ui.row({ key = "dropdown-row-" .. mode .. "-" .. tostring(current_val), gap = 10, align = "center" }, {
     ui.row({ gap = 10, align = "center", width = 140 }, {
       ui.glyph({ name = profileGlyph(current_val), size = 16, color = "primary" }),
       ui.label({ text = title, fontWeight = "medium" })
@@ -158,8 +158,8 @@ function render()
   }
 
   if show_ac_batt then
-    table.insert(children, profileDropdown("AC Profile", "ac", data.ac_profile))
-    table.insert(children, profileDropdown("Battery Profile", "battery", data.battery_profile))
+    table.insert(children, profileDropdown("AC", "ac", data.ac_profile))
+    table.insert(children, profileDropdown("Battery", "battery", data.battery_profile))
     table.insert(children, ui.separator({ spacing = 5 }))
   end
 
