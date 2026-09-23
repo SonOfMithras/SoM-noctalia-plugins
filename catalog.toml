@@ -23,3 +23,16 @@ deprecated   = false
 plugin_api   = 28
 tags         = ["asusctl", "asus", "power-profiles", "battery-threshold"]
 dependencies = ["asusctl"]
+
+[[plugin]]
+id           = "SoM/asus-laptop-controls"
+name         = "Asus Laptop Controls"
+version      = "1.0.0"
+author       = "SoM"
+license      = "MIT"
+icon         = "device-laptop"
+description  = "Controls ASUS Armoury Crate settings, keyboard backlight idle timeout, and smart gestures."
+deprecated   = false
+plugin_api   = 28
+tags         = ["asusctl", "asus", "keyboard-backlight", "gestures", "touchpad"]
+dependencies = ["asusctl", "brightnessctl", "jq"]

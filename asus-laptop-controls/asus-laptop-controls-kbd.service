@@ -1,0 +1,11 @@
+[Unit]
+Description=Keyboard Backlight Idle Manager
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/asus-laptop-controls-kbd.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
