@@ -4,12 +4,13 @@ A Noctalia v5 plugin providing a control center for ASUS laptops (ROG, TUF, ZenB
 
 ## Features
 
-- **Platform Power Profiles**: Switch between ASUS Platform Profiles (**Quiet**, **Balanced**, **Performance**) directly from the panel or status bar widget.
+- **Platform Power Profiles**: Switch between ASUS Platform Profiles (**Quiet**, **Balanced**, **Performance**) from the control panel or cycle through them with the quick toggle shortcut button.
 - **AC & Battery Profiles**: Configure distinct profiles for AC power and battery mode.
 - **Battery Health Thresholds**: Set a maximum charge limit percentage (20%–100%) to preserve battery longevity.
 - **One-Shot Charge**: Temporarily charge to 100% for a single cycle before returning to your configured limit.
 - **Keyboard Backlight Manager**: Control backlight level (`Off`, `Low`, `Med`, `High`) and configure idle auto-dimming timeout (from 1s up to 10m) via a responsive dropdown.
-- **Smart Touchpad Edge Gestures**: Swipe along touchpad edges to adjust display brightness, system volume, or media playback.
+- **Smart Touchpad Edge Gestures**: Swipe along touchpad edges to adjust display brightness (left edge), system volume (right edge), or media playback (top edge).
+- **Multiple UI Components**: Includes an attached control panel (`panel`), a status bar widget that opens the panel (`asusctl`), an informational desktop widget (`asusctl_desktop`), and a profile-cycling shortcut button (`asusctl_toggle_button`).
 - **Service Management**: Live status, enable/disable switches, and one-click restart for background daemons directly inside the panel.
 
 ## Dependencies
@@ -25,7 +26,7 @@ A Noctalia v5 plugin providing a control center for ASUS laptops (ROG, TUF, ZenB
 
 ### Noctalia Panel & IPC Commands
 
-Control the Asus Laptop Controls panel or open settings from keybindings, scripts, or the terminal:
+Control the Asus Laptop Controls panel, toggle touchpad, or open settings from keybindings, scripts, or the terminal:
 
 ```bash
 # Toggle the panel (recommended for keyboard shortcuts / compositor keybindings)
@@ -37,12 +38,15 @@ noctalia msg panel-open SoM/asus-laptop-controls:panel
 # Close the panel
 noctalia msg panel-close SoM/asus-laptop-controls:panel
 
+# Toggle touchpad via Noctalia service IPC
+noctalia msg plugin:SoM/asus-laptop-controls:touchpad toggle
+
 # Open the plugin settings window in Noctalia
 noctalia msg settings-open-plugin SoM/asus-laptop-controls
 ```
 
 > [!NOTE]
-> Noctalia IPC handles shell panels, settings, volume, brightness, and media playback. Touchpad enable/disable is managed at the compositor level (`hyprctl` or `niri`) or via kernel input inhibit; see [Touchpad Control](#touchpad-control-enable--disable) below for full commands.
+> Noctalia IPC handles shell panels, settings, volume, brightness, media playback, and touchpad toggle via plugin service. Touchpad state can also be toggled directly at the compositor level (`hyprctl` or `niri`) or via kernel input inhibit; see [Touchpad Control](#touchpad-control-enable--disable) below for full commands.
 
 ### Background Services Management
 
@@ -200,15 +204,22 @@ noctalia msg media previous
 
 ### Installation & Uninstallation Scripts
 
-Run the included scripts to install or remove background services, binaries, and udev rules:
+Run the included scripts to install or remove background services, binaries, and udev rules (via `pkexec` for graphical polkit prompt, or `sudo` for terminal):
 
 ```bash
-# Install binaries, udev rules, and background services (prompts for root via pkexec)
+# Install binaries, udev rules, and background services
 pkexec bash ./install.sh --enable
+# or in a terminal:
+sudo bash ./install.sh --enable
 
 # Install without enabling automatically
 pkexec bash ./install.sh --no-enable
+# or in a terminal:
+sudo bash ./install.sh --no-enable
 
 # Completely uninstall background services, binaries, and udev rules
 pkexec bash ./uninstall.sh
+# or in a terminal:
+sudo bash ./uninstall.sh
 ```
+
