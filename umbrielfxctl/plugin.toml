@@ -1,0 +1,97 @@
+id = "SoM/umbrielfxctl"
+name = "UmbrielFXctl"
+version = "1.1.0"
+plugin_api = 28
+author = "SoM"
+license = "MIT"
+dependencies = ["umbriel", "python"]
+tags = ["umbriel", "shaders", "animations", "effects", "glsl", "compositor", "fx"]
+icon = "sparkles"
+description = "Control Umbriel community shaders, animations, and post-processing FX."
+
+[[setting]]
+key = "update_interval_sec"
+type = "float"
+label_key = "Refresh Interval (sec)"
+default = 5.0
+min = 1.0
+max = 300.0
+step = 1.0
+
+[[setting]]
+key = "show_previews"
+type = "bool"
+label_key = "Show Preview Thumbnails"
+default = true
+
+[[setting]]
+key = "default_tab"
+type = "select"
+label_key = "Default Category Tab"
+default = "workspace"
+options = [
+  { value = "workspace", label_key = "Workspace Transitions" },
+  { value = "in-out", label_key = "Window In/Out Animations" },
+  { value = "move", label_key = "Window Movement (Move/Resize)" },
+  { value = "border", label_key = "Border Shaders" },
+  { value = "cursor", label_key = "Cursor Shaders" },
+  { value = "misc", label_key = "Misc Window FX / Shaders" }
+]
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 720
+height = 640
+placement = "attached"
+open_near_click = true
+
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+  [[widget.setting]]
+  key = "display_style"
+  type = "select"
+  label_key = "Display Style"
+  default = "both"
+  options = [
+    { value = "both", label_key = "Icon and Text" },
+    { value = "icon", label_key = "Icon Only" },
+    { value = "text", label_key = "Text Only" }
+  ]
+
+  [[widget.setting]]
+  key = "color"
+  type = "select"
+  label_key = "Text Color"
+  default = "on_surface"
+  options = [
+    { value = "on_surface", label_key = "Default" },
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" }
+  ]
+
+  [[widget.setting]]
+  key = "icon_color"
+  type = "select"
+  label_key = "Icon Color"
+  default = "primary"
+  options = [
+    { value = "primary", label_key = "Primary" },
+    { value = "secondary", label_key = "Secondary" },
+    { value = "tertiary", label_key = "Tertiary" },
+    { value = "on_surface", label_key = "Default" }
+  ]
+
+[widget.actions]
+left = "panel-toggle SoM/umbrielfxctl:panel"
+
+[[shortcut]]
+id = "shortcut"
+entry = "shortcut.luau"

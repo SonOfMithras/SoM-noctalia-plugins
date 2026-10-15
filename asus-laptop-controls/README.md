@@ -4,11 +4,14 @@ A Noctalia v5 plugin providing a control center for ASUS laptops (ROG, TUF, ZenB
 
 ## Features
 
+### Asusctl
 - **Platform Power Profiles**: Switch between ASUS Platform Profiles (**Quiet**, **Balanced**, **Performance**) from the control panel or cycle through them with the quick toggle shortcut button.
 - **AC & Battery Profiles**: Configure distinct profiles for AC power and battery mode.
 - **Battery Health Thresholds**: Set a maximum charge limit percentage (20%–100%) to preserve battery longevity.
 - **One-Shot Charge**: Temporarily charge to 100% for a single cycle before returning to your configured limit.
-- **Keyboard Backlight Manager**: Control backlight level (`Off`, `Low`, `Med`, `High`) and configure idle auto-dimming timeout (from 1s up to 10m) via a responsive dropdown.
+
+### Bundled Helpers
+- **Keyboard Backlight Manager**: Control backlight level (`Off`, `Low`, `Med`, `High`) and configure idle auto-dimming timeout (from 1s up to 10m) via a responsive dropdown. 
 - **Smart Touchpad Edge Gestures**: Swipe along touchpad edges to adjust display brightness (left edge), system volume (right edge), or media playback (top edge).
 - **Multiple UI Components**: Includes an attached control panel (`panel`), a status bar widget that opens the panel (`asusctl`), an informational desktop widget (`asusctl_desktop`), and a profile-cycling shortcut button (`asusctl_toggle_button`).
 - **Service Management**: Live status, enable/disable switches, and one-click restart for background daemons directly inside the panel.
@@ -222,4 +225,3 @@ pkexec bash ./uninstall.sh
 # or in a terminal:
 sudo bash ./uninstall.sh
 ```
-

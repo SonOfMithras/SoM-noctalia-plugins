@@ -46,6 +46,21 @@ A comprehensive control center plugin for ZenBook laptops. Unifies platform powe
 
 **Dependencies:** `asusctl`, `asusd`, `brightnessctl`, `jq`, `libevdev`.
 
+### 4. [UmbrielFXctl](./umbrielfxctl)
+**ID:** `SoM/umbrielfxctl`
+
+A companion control center plugin for the [Community Umbriel Shaders collection](https://github.com/noctalia-dev/community-umbriel-shaders/tree/main). Simply clone the shaders collection into `~/.config/umbriel/shaders/community`, and the plugin handles the rest.
+
+**Key Features:**
+- Manages 6 independent include files (`umbriel-effect-workspace`, `-in-out`, `-move`, `-misc`, `-border`, `-cursor`), allowing simultaneous multi-effect activation.
+- Safely registers all 6 files in the `[include.optional]` section of `~/.config/umbriel/config.toml`.
+- Discovers and categorizes community effects: Workspace transitions, In/Out window lifecycle, Move/resize deformation, Misc window FX & screen shaders, border decorations, and cursor trails.
+- Rich Noctalia declarative UI panel with live previews, 6 category tabs, relative path tooltips, and right-click to open effect folder in file manager.
+- Status bar widget and Control Center shortcut showing live multi-effect status.
+- One-click config removal button on the panel and Noctalia IPC plugin command (`noctalia msg plugin SoM/umbrielfxctl:service all remove-config`) to unregister includes and remove created config files.
+
+**Dependencies:** `umbriel`, `python`.
+
 ---
 
 *See the individual `README.md` in each plugin's folder for more detailed information and configuration instructions.*
